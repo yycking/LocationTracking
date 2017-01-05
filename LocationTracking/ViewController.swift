@@ -72,6 +72,8 @@ extension ViewController {
     @IBAction func setting(_ sender: Any) {
         UIApplication.shared.open(URL(string:UIApplicationOpenSettingsURLString)!, options: [:], completionHandler: nil)
     }
+    
+    @IBAction func unwindToViewController(segue: UIStoryboardSegue) {}
 }
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
