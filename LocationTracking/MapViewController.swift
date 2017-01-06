@@ -13,11 +13,10 @@ class Annotation: NSObject, MKAnnotation {
     var coordinate: CLLocationCoordinate2D
     var title: String?
     var subtitle: String?
+    var color = UIColor.green
     
-    init(coordinate: CLLocationCoordinate2D, title: String, subtitle: String) {
+    init(coordinate: CLLocationCoordinate2D) {
         self.coordinate = coordinate
-        self.title = title
-        self.subtitle = subtitle
     }
 }
 
@@ -31,11 +30,18 @@ class MapViewController: UIViewController {
         DispatchQueue.global().async {
             var coordinates = [CLLocationCoordinate2D]()
             var annotations = [Annotation]()
-            for location in LogCenter.loadData() {
-                coordinates.append(location.coordinate)
+            var timestamp:Date?
+            for data in LogCenter.loadData() {
+                let annotation = Annotation(coordinate: data.location.coordinate)
+                if let first = timestamp, first > data.date {
+                    annotation.color = UIColor.red
+                }
+                annotation.title = data.type
                 
+                coordinates.append(data.location.coordinate)
+                annotations.append(annotation)
                 
-                annotations.append(Annotation(coordinate: location.coordinate, title: location.timestamp.description, subtitle: ""))
+                timestamp = data.date
             }
             let polygon = MKPolyline(coordinates: coordinates, count: coordinates.count)
 
@@ -59,5 +65,22 @@ extension MapViewController: MKMapViewDelegate {
         }
         
         return MKOverlayRenderer()
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        guard let anAnnotation = annotation as? Annotation else {
+            return nil
+        }
+        
+        let reuseId = "pin\(anAnnotation.color)"
+        var anView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
+        if anView == nil {
+            anView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+        } else {
+            anView?.annotation = annotation
+        }
+        anView?.pinTintColor = anAnnotation.color
+        
+        return anView
     }
 }

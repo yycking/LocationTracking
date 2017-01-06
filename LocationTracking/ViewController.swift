@@ -10,11 +10,13 @@ import UIKit
 import CoreLocation
 
 class ViewController: UIViewController {
+    static let UpdateDataTable = "UpdateData"
+    
     @IBOutlet weak var tableview: UITableView!
     @IBOutlet weak var playButton: UIBarButtonItem!
     @IBOutlet weak var stopButton: UIBarButtonItem!
     
-    var datas = [CLLocation]()
+    var datas = [(location:CLLocation, type:String, date:Date)]()
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -24,12 +26,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        if LogCenter.loadData().count != 0 {
-            
-        }
-        
         NotificationCenter.default.addObserver(self, selector: #selector(reload), name: .UIApplicationWillEnterForeground, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name: NSNotification.Name(AppDelegate.UpdateDataTable), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name: NSNotification.Name(type(of: self).UpdateDataTable), object: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -39,7 +37,7 @@ class ViewController: UIViewController {
 
     func reload() {
         reloadData()
-        LocationCenter.current.reloadSetting()
+        LocationCenter.reloadSetting()
     }
     
     func reloadData() {
@@ -51,22 +49,22 @@ class ViewController: UIViewController {
 extension ViewController {
     @IBAction func play(_ sender: Any) {
         playButton.isEnabled = false
-        playButton.tintColor = UIColor.clear
         
         stopButton.isEnabled = true
-        stopButton.tintColor = UIBarButtonItem().tintColor
         
-        LocationCenter.current.start()
+        LogCenter.delData()
+        
+        LocationCenter.start()
     }
     
     @IBAction func stop(_ sender: Any) {
         playButton.isEnabled = true
-        playButton.tintColor = UIBarButtonItem().tintColor
         
         stopButton.isEnabled = false
-        stopButton.tintColor = UIColor.clear
         
-        LocationCenter.current.stop()
+        LocationCenter.stop()
+        
+        LogCenter.saveContext()
     }
     
     @IBAction func setting(_ sender: Any) {
@@ -89,8 +87,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "ElementCell")
         
         // Adding the right informations
-        cell.textLabel?.text = element.timestamp.description
-        cell.detailTextLabel?.text = element.description
+        cell.textLabel?.text = "\(element.date): \(element.type)"
+        cell.detailTextLabel?.text = element.location.description
         cell.detailTextLabel?.numberOfLines = 0
         cell.detailTextLabel?.lineBreakMode = .byWordWrapping
         

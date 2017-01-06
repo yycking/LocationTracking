@@ -8,10 +8,11 @@
 
 import CoreData
 import CoreLocation
+import UserNotifications
 
 class LogCenter: NSManagedObjectContext {
-    static let entityName = "LocationPoint"
-    static let current: NSManagedObjectContext = {
+    static let entityName = String(describing: LocationPoint.self)
+    static let this: NSManagedObjectContext = {
         let container = NSPersistentContainer(name: "LocationTracking")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
@@ -21,41 +22,53 @@ class LogCenter: NSManagedObjectContext {
         return container.viewContext
     }()
 
-    static func add(location: CLLocation?) {
-        guard let data = NSEntityDescription.insertNewObject(forEntityName: entityName, into: current) as? LocationPoint else { return }
-        var value = CLLocation()
-        if let loc = location {
-            value = loc
-        }
+    static func add(location: CLLocation, type: LocationType) {
+        guard let data = NSEntityDescription.insertNewObject(forEntityName: entityName, into: this) as? LocationPoint else { return }
         
-        data.initFromLocation(location: value)
+        data.initFromLocation(location: location)
+        data.type = type.rawValue
+        data.create = NSDate()
+        
+        let content = UNMutableNotificationContent()
+        content.title = type.rawValue
+        content.subtitle = location.coordinate.latitude.description
+        content.body = location.description
+        LocalNotificationCenter.post(content: content)
+        
+        NotificationCenter.default.post(name: Notification.Name(ViewController.UpdateDataTable), object: location)
     }
     
-    static func loadData() -> [CLLocation] {
+    static func loadData() -> [(location:CLLocation, type:String, date:Date)] {
         let request = NSFetchRequest<LocationPoint>(entityName: entityName)
+        request.sortDescriptors = [NSSortDescriptor(key: "create", ascending: true)]
+        var loactions = [(CLLocation, String, Date)]()
         
-        var loactions = [CLLocation]()
-        
-        guard let results = try? current.fetch(request) else {
+        guard let results = try? this.fetch(request) else {
             return loactions
         }
         for result in results {
-            loactions.append(result.location())
+            loactions.append((result.location(), result.type!, result.create as! Date))
         }
         
         return loactions
     }
     
     static func delData() {
-        let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
-        let request = NSBatchDeleteRequest(fetchRequest: fetch)
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+        request.includesPropertyValues = false
         
-        let _ = try? current.execute(request)
+        guard let results = (try? this.fetch(request)) as? [NSManagedObject] else {
+            return
+        }
+        
+        for result in results {
+            this.delete(result)
+        }
     }
     
     static func saveContext () {
-        if current.hasChanges {
-            try? current.save()
+        if this.hasChanges {
+            try? this.save()
         }
     }
 }

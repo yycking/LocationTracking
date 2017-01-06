@@ -8,6 +8,12 @@
 
 import CoreLocation
 
+enum LocationType: String {
+    case Update
+    case WakeUp
+    case LeaveRegion
+}
+
 extension LocationPoint {
     func initFromLocation(location: CLLocation) {
         self.latitude           = location.coordinate.latitude

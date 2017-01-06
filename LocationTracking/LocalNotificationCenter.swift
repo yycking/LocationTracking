@@ -15,11 +15,7 @@ class LocalNotificationCenter: UNUserNotificationCenter {
         }
     }
     
-    static func post(title: String, subtitle: String) {
-        let content = UNMutableNotificationContent()
-        content.title = title
-        content.body = subtitle
-        
+    static func post(content: UNMutableNotificationContent) {        
         let request = UNNotificationRequest(identifier: "notification1", content: content, trigger: nil)
         current().add(request) { (error) in
             

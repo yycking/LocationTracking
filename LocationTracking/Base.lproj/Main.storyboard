@@ -40,8 +40,8 @@
                                             <action selector="play:" destination="BYZ-38-t0r" id="R1c-Pn-RHt"/>
                                         </connections>
                                     </barButtonItem>
+                                    <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="gDc-3c-kNE"/>
                                     <barButtonItem enabled="NO" systemItem="pause" id="mBM-T4-eSI">
-                                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <connections>
                                             <action selector="stop:" destination="BYZ-38-t0r" id="Hhh-Vo-22K"/>
                                         </connections>

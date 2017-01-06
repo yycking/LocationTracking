@@ -7,11 +7,10 @@
 //
 
 import UIKit
+import CoreLocation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    static let UpdateDataTable = "UpdateData"
-
     var window: UIWindow?
 
 
@@ -19,10 +18,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         LocalNotificationCenter.registry()
         
-        LocationCenter.current.delegate = self
         if let location = launchOptions?[.location] as? CLLocation {
-            post(location: location, label: "Wakeup")
-            LocationCenter.current.start()
+            LogCenter.add(location: location, type: .WakeUp)
+            LocationCenter.start()
         }
         
         return true
@@ -53,42 +51,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 }
-
-import CoreLocation
-
-extension AppDelegate: CLLocationManagerDelegate {
-    func post(location: CLLocation?, label: String) {
-        var text = "no"
-        if let data = location {
-            text = String(format: "%f, %f", data.coordinate.latitude, data.coordinate.longitude)
-        }
-        LocalNotificationCenter.post(title: label, subtitle: text)
-        LogCenter.add(location: location)
-        
-        NotificationCenter.default.post(name: Notification.Name(type(of: self).UpdateDataTable), object: nil)
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.last else {
-            post(location: nil, label: "Update")
-            return
-        }
-        
-        post(location: location, label: "Update")
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-        manager.stopMonitoring(for: region)
-        
-        guard
-            let location = manager.location,
-            let center = manager as? LocationCenter
-        else {
-            post(location: nil, label: "Region")
-            return
-        }
-        center.registerNextRegion(location: location)
-        post(location: location, label: "Region")
-    }
-}
-

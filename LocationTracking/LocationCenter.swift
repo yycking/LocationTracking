@@ -9,36 +9,41 @@
 import CoreLocation
 
 class LocationCenter: CLLocationManager {
-    static let current : LocationCenter = {
+    static let this : LocationCenter = {
         let instance = LocationCenter()
         instance.requestAlwaysAuthorization()
         instance.reloadSetting()
+        instance.delegate = instance
         return instance
     }()
     var enableSignificantLocationChanges = false
     var enableRegion = false
     
-    func registerNextRegion(location: CLLocation) {
+    func registerNextRegion() {
+        guard let location = self.location else { return }
         let region = CLCircularRegion(center: location.coordinate, radius: self.distanceFilter, identifier: "")
         self.startMonitoring(for: region)
     }
     
-    func start() {
-        self.startUpdatingLocation()
+    static func start() {
+        this.startUpdatingLocation()
         
-        if enableSignificantLocationChanges {
-            self.startMonitoringSignificantLocationChanges()
+        if this.enableSignificantLocationChanges {
+            this.startMonitoringSignificantLocationChanges()
         }
         
-        if enableRegion {
-            let location = self.location!
-            registerNextRegion(location: location)
+        if this.enableRegion {
+            this.registerNextRegion()
         }
     }
     
-    func stop() {
-        self.stopUpdatingLocation()
-        self.stopMonitoringSignificantLocationChanges()
+    static func stop() {
+        this.stopUpdatingLocation()
+        this.stopMonitoringSignificantLocationChanges()
+        this.stopRegions()
+    }
+    
+    func stopRegions() {
         for region in self.monitoredRegions {
             self.stopMonitoring(for: region)
         }
@@ -90,30 +95,53 @@ class LocationCenter: CLLocationManager {
         
         enableSignificantLocationChanges = loadBool(forKey: "significantLocationChanges")
         if enableSignificantLocationChanges == false {
-            stopMonitoringSignificantLocationChanges()
+            self.stopMonitoringSignificantLocationChanges()
         }
         
         enableRegion = loadBool(forKey: "region")
         if enableRegion == false {
-            for region in self.monitoredRegions {
-                self.stopMonitoring(for: region)
-            }
+            self.stopRegions()
         }
     }
     
-    func loadDouble(forKey key: String, defaultValue: Double) -> Double {
-        let defaults = UserDefaults.standard
-        if let _ = defaults.object(forKey: key) {
-            return defaults.double(forKey: key)
-        }
-        return defaultValue;
-    }
-    
-    func loadBool(forKey key: String, defaultValue: Bool = false) -> Bool {
-        let defaults = UserDefaults.standard
-        if let _ = defaults.object(forKey: key) {
-            return defaults.bool(forKey: key)
-        }
-        return defaultValue;
+    static func reloadSetting() {
+        this.reloadSetting()
     }
 }
+
+func loadDouble(forKey key: String, defaultValue: Double) -> Double {
+    let defaults = UserDefaults.standard
+    if let _ = defaults.object(forKey: key) {
+        return defaults.double(forKey: key)
+    }
+    return defaultValue;
+}
+
+func loadBool(forKey key: String, defaultValue: Bool = false) -> Bool {
+    let defaults = UserDefaults.standard
+    if let _ = defaults.object(forKey: key) {
+        return defaults.bool(forKey: key)
+    }
+    return defaultValue;
+}
+
+extension LocationCenter: CLLocationManagerDelegate {
+    func post(location: CLLocation?, type: LocationType) {
+        let location = location ?? CLLocation()
+        LogCenter.add(location: location, type: type)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        post(location: locations.last, type: .Update)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+        manager.stopMonitoring(for: region)
+        
+        post(location: manager.location, type: .LeaveRegion)
+        guard let center = manager as? LocationCenter else { return }
+        center.registerNextRegion()
+    }
+}
+
