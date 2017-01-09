@@ -37,6 +37,7 @@ class MapViewController: UIViewController {
                     annotation.color = UIColor.red
                 }
                 annotation.title = data.type
+                annotation.subtitle = data.date.description
                 
                 coordinates.append(data.location.coordinate)
                 annotations.append(annotation)
@@ -80,6 +81,7 @@ extension MapViewController: MKMapViewDelegate {
             anView?.annotation = annotation
         }
         anView?.pinTintColor = anAnnotation.color
+        anView?.canShowCallout = true
         
         return anView
     }
