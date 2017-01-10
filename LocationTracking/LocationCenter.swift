@@ -11,6 +11,7 @@ import CoreLocation
 class LocationCenter: CLLocationManager {
     static let this : LocationCenter = {
         let instance = LocationCenter()
+        instance.requestWhenInUseAuthorization()
         instance.requestAlwaysAuthorization()
         instance.reloadSetting()
         instance.delegate = instance
