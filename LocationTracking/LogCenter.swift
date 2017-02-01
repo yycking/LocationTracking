@@ -29,11 +29,11 @@ class LogCenter: NSManagedObjectContext {
         data.type = type.rawValue
         data.create = NSDate()
         
-        let content = UNMutableNotificationContent()
-        content.title = type.rawValue
-        content.subtitle = location.coordinate.latitude.description
-        content.body = location.description
-        LocalNotificationCenter.post(content: content)
+        UNUserNotificationCenter
+            .title(type.rawValue)
+            .subtitle(location.coordinate.latitude.description)
+            .body(location.description)
+            .post()
         
         NotificationCenter.default.post(name: Notification.Name(ViewController.UpdateDataTable), object: location)
     }

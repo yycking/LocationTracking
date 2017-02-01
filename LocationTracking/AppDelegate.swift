@@ -9,14 +9,16 @@
 import UIKit
 import CoreLocation
 
+import UserNotifications
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-        LocalNotificationCenter.registry()
+        // Override point for customization after application launch.      
+        UNUserNotificationCenter.request(options: [.alert, .sound])
         
         if let location = launchOptions?[.location] as? CLLocation {
             LogCenter.add(location: location, type: .WakeUp)

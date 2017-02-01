@@ -13,13 +13,13 @@
 		AFD545461E1CD86C00978E8A /* LocationTracking.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AFD545441E1CD86C00978E8A /* LocationTracking.xcdatamodeld */; };
 		AFD545481E1CD86C00978E8A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AFD545471E1CD86C00978E8A /* Assets.xcassets */; };
 		AFD5454B1E1CD86C00978E8A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AFD545491E1CD86C00978E8A /* LaunchScreen.storyboard */; };
-		AFD545531E1CDAE300978E8A /* LocalNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD545521E1CDAE300978E8A /* LocalNotificationCenter.swift */; };
 		AFD545551E1CDFBE00978E8A /* LocationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD545541E1CDFBE00978E8A /* LocationCenter.swift */; };
 		AFD545671E1CF67F00978E8A /* LogCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD545661E1CF67F00978E8A /* LogCenter.swift */; };
 		AFD545711E1D044E00978E8A /* LocationPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD545701E1D044E00978E8A /* LocationPoint.swift */; };
 		AFD545731E1DE98D00978E8A /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = AFD545721E1DE98D00978E8A /* Settings.bundle */; };
 		AFD545761E1E485100978E8A /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFD545751E1E485100978E8A /* MapKit.framework */; };
 		AFD5457A1E1E501500978E8A /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD545791E1E501500978E8A /* MapViewController.swift */; };
+		F2B61A901E41D2A6003DF6DB /* UserNotifications+.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B61A8F1E41D2A6003DF6DB /* UserNotifications+.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,13 +31,13 @@
 		AFD545471E1CD86C00978E8A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AFD5454A1E1CD86C00978E8A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AFD5454C1E1CD86C00978E8A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AFD545521E1CDAE300978E8A /* LocalNotificationCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotificationCenter.swift; sourceTree = "<group>"; };
 		AFD545541E1CDFBE00978E8A /* LocationCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationCenter.swift; sourceTree = "<group>"; };
 		AFD545661E1CF67F00978E8A /* LogCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogCenter.swift; sourceTree = "<group>"; };
 		AFD545701E1D044E00978E8A /* LocationPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationPoint.swift; sourceTree = "<group>"; };
 		AFD545721E1DE98D00978E8A /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		AFD545751E1E485100978E8A /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		AFD545791E1E501500978E8A /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		F2B61A8F1E41D2A6003DF6DB /* UserNotifications+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserNotifications+.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,12 +79,12 @@
 				AFD545491E1CD86C00978E8A /* LaunchScreen.storyboard */,
 				AFD5454C1E1CD86C00978E8A /* Info.plist */,
 				AFD545441E1CD86C00978E8A /* LocationTracking.xcdatamodeld */,
-				AFD545521E1CDAE300978E8A /* LocalNotificationCenter.swift */,
 				AFD545541E1CDFBE00978E8A /* LocationCenter.swift */,
 				AFD545661E1CF67F00978E8A /* LogCenter.swift */,
 				AFD545701E1D044E00978E8A /* LocationPoint.swift */,
 				AFD545791E1E501500978E8A /* MapViewController.swift */,
 				AFD545721E1DE98D00978E8A /* Settings.bundle */,
+				F2B61A8F1E41D2A6003DF6DB /* UserNotifications+.swift */,
 			);
 			path = LocationTracking;
 			sourceTree = "<group>";
@@ -179,12 +179,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F2B61A901E41D2A6003DF6DB /* UserNotifications+.swift in Sources */,
 				AFD545461E1CD86C00978E8A /* LocationTracking.xcdatamodeld in Sources */,
 				AFD545401E1CD86C00978E8A /* ViewController.swift in Sources */,
 				AFD545711E1D044E00978E8A /* LocationPoint.swift in Sources */,
 				AFD5453E1E1CD86C00978E8A /* AppDelegate.swift in Sources */,
 				AFD545671E1CF67F00978E8A /* LogCenter.swift in Sources */,
-				AFD545531E1CDAE300978E8A /* LocalNotificationCenter.swift in Sources */,
 				AFD545551E1CDFBE00978E8A /* LocationCenter.swift in Sources */,
 				AFD5457A1E1E501500978E8A /* MapViewController.swift in Sources */,
 			);
